@@ -233,19 +233,19 @@
 
     .marker {
       cursor: pointer;
-      transition: transform 0.2s ease, filter 0.2s ease;
+      transition: filter 0.2s ease;
     }
 
     .marker:hover {
-      transform: scale(1.4);
-      filter: brightness(1.15);
+      filter: brightness(1.2);
     }
 
     .marker.selected {
-      filter: drop-shadow(0 0 6px currentColor);
+      stroke-width: 3px;
+      filter: drop-shadow(0 0 8px currentColor);
     }
 
-    /* FIXED TOOLTIP - Now uses fixed positioning */
+    /* FIXED TOOLTIP - stable positioning */
     .tooltip {
       position: fixed;
       background: var(--bg-primary);
@@ -258,7 +258,7 @@
       pointer-events: none;
       opacity: 0;
       visibility: hidden;
-      transition: opacity 0.15s ease, visibility 0.15s ease;
+      transition: opacity 0.2s ease;
       z-index: 9999;
       box-shadow: var(--shadow-lg);
     }
@@ -708,30 +708,30 @@
 
             <!-- Customer markers -->
             <!-- VIC -->
-            <circle class="marker" data-id="0" cx="292" cy="403" r="8" fill="var(--vic)" stroke="#1d4ed8" stroke-width="1.5"/>
-            <circle class="marker" data-id="1" cx="195" cy="335" r="8" fill="var(--vic)" stroke="#1d4ed8" stroke-width="1.5"/>
-            <circle class="marker" data-id="2" cx="215" cy="350" r="8" fill="var(--vic)" stroke="#1d4ed8" stroke-width="1.5"/>
-            <circle class="marker" data-id="3" cx="238" cy="355" r="8" fill="var(--vic)" stroke="#1d4ed8" stroke-width="1.5"/>
-            <circle class="marker" data-id="4" cx="175" cy="365" r="8" fill="var(--vic)" stroke="#1d4ed8" stroke-width="1.5"/>
+            <circle class="marker" data-id="0" cx="292" cy="403" r="10" fill="var(--vic)" stroke="#1d4ed8" stroke-width="2"/>
+            <circle class="marker" data-id="1" cx="195" cy="335" r="10" fill="var(--vic)" stroke="#1d4ed8" stroke-width="2"/>
+            <circle class="marker" data-id="2" cx="215" cy="350" r="10" fill="var(--vic)" stroke="#1d4ed8" stroke-width="2"/>
+            <circle class="marker" data-id="3" cx="238" cy="355" r="10" fill="var(--vic)" stroke="#1d4ed8" stroke-width="2"/>
+            <circle class="marker" data-id="4" cx="175" cy="365" r="10" fill="var(--vic)" stroke="#1d4ed8" stroke-width="2"/>
             
             <!-- SA -->
-            <circle class="marker" data-id="5" cx="98" cy="280" r="8" fill="var(--sa)" stroke="#c2410c" stroke-width="1.5"/>
-            <circle class="marker" data-id="6" cx="138" cy="325" r="8" fill="var(--sa)" stroke="#c2410c" stroke-width="1.5"/>
-            <circle class="marker" data-id="7" cx="108" cy="300" r="8" fill="var(--sa)" stroke="#c2410c" stroke-width="1.5"/>
-            <circle class="marker" data-id="8" cx="92" cy="255" r="8" fill="var(--sa)" stroke="#c2410c" stroke-width="1.5"/>
+            <circle class="marker" data-id="5" cx="98" cy="280" r="10" fill="var(--sa)" stroke="#c2410c" stroke-width="2"/>
+            <circle class="marker" data-id="6" cx="138" cy="325" r="10" fill="var(--sa)" stroke="#c2410c" stroke-width="2"/>
+            <circle class="marker" data-id="7" cx="108" cy="300" r="10" fill="var(--sa)" stroke="#c2410c" stroke-width="2"/>
+            <circle class="marker" data-id="8" cx="92" cy="255" r="10" fill="var(--sa)" stroke="#c2410c" stroke-width="2"/>
             
             <!-- NSW -->
-            <circle class="marker" data-id="9" cx="405" cy="272" r="8" fill="var(--nsw)" stroke="#6d28d9" stroke-width="1.5"/>
-            <circle class="marker" data-id="10" cx="338" cy="205" r="8" fill="var(--nsw)" stroke="#6d28d9" stroke-width="1.5"/>
-            <circle class="marker" data-id="11" cx="288" cy="235" r="8" fill="var(--nsw)" stroke="#6d28d9" stroke-width="1.5"/>
-            <circle class="marker" data-id="12" cx="305" cy="252" r="8" fill="var(--nsw)" stroke="#6d28d9" stroke-width="1.5"/>
-            <circle class="marker" data-id="13" cx="258" cy="300" r="8" fill="var(--nsw)" stroke="#6d28d9" stroke-width="1.5"/>
-            <circle class="marker" data-id="14" cx="235" cy="318" r="8" fill="var(--nsw)" stroke="#6d28d9" stroke-width="1.5"/>
-            <circle class="marker" data-id="15" cx="352" cy="222" r="8" fill="var(--nsw)" stroke="#6d28d9" stroke-width="1.5"/>
+            <circle class="marker" data-id="9" cx="405" cy="272" r="10" fill="var(--nsw)" stroke="#6d28d9" stroke-width="2"/>
+            <circle class="marker" data-id="10" cx="338" cy="205" r="10" fill="var(--nsw)" stroke="#6d28d9" stroke-width="2"/>
+            <circle class="marker" data-id="11" cx="288" cy="235" r="10" fill="var(--nsw)" stroke="#6d28d9" stroke-width="2"/>
+            <circle class="marker" data-id="12" cx="305" cy="252" r="10" fill="var(--nsw)" stroke="#6d28d9" stroke-width="2"/>
+            <circle class="marker" data-id="13" cx="258" cy="300" r="10" fill="var(--nsw)" stroke="#6d28d9" stroke-width="2"/>
+            <circle class="marker" data-id="14" cx="235" cy="318" r="10" fill="var(--nsw)" stroke="#6d28d9" stroke-width="2"/>
+            <circle class="marker" data-id="15" cx="352" cy="222" r="10" fill="var(--nsw)" stroke="#6d28d9" stroke-width="2"/>
             
             <!-- QLD -->
-            <circle class="marker" data-id="16" cx="378" cy="148" r="8" fill="var(--qld)" stroke="#be185d" stroke-width="1.5"/>
-            <circle class="marker" data-id="17" cx="358" cy="168" r="8" fill="var(--qld)" stroke="#be185d" stroke-width="1.5"/>
+            <circle class="marker" data-id="16" cx="378" cy="148" r="10" fill="var(--qld)" stroke="#be185d" stroke-width="2"/>
+            <circle class="marker" data-id="17" cx="358" cy="168" r="10" fill="var(--qld)" stroke="#be185d" stroke-width="2"/>
             
             <!-- Stop numbers overlay -->
             <g id="stop-numbers"></g>
@@ -840,6 +840,10 @@
     const stopList = document.getElementById('stop-list');
     const routeLines = document.getElementById('route-lines');
     const stopNumbers = document.getElementById('stop-numbers');
+    
+    // Tooltip state management to prevent jitter
+    let tooltipTimeout = null;
+    let currentTooltipCustomer = null;
 
     function formatTime(mins) {
       const h = Math.floor(mins / 60);
@@ -864,7 +868,17 @@
         .map(c => ({ name: c.name, distance: c.driveMin }));
     }
 
-    function showTooltip(e, customer) {
+    function showTooltip(marker, customer) {
+      // Prevent re-rendering if same customer
+      if (currentTooltipCustomer === customer.id) return;
+      currentTooltipCustomer = customer.id;
+      
+      // Clear any pending hide
+      if (tooltipTimeout) {
+        clearTimeout(tooltipTimeout);
+        tooltipTimeout = null;
+      }
+      
       const stateOthers = getStateDistances(customer);
       
       let html = `
@@ -897,21 +911,32 @@
       }
 
       tooltip.innerHTML = html;
-      tooltip.classList.add('visible');
 
-      // Position tooltip using fixed positioning relative to viewport
-      const rect = e.target.getBoundingClientRect();
-      let left = rect.right + 12;
-      let top = rect.top - 20;
+      // Get marker position using SVG coordinates converted to screen
+      const svg = document.getElementById('route-map');
+      const svgRect = svg.getBoundingClientRect();
+      const viewBox = svg.viewBox.baseVal;
+      
+      // Calculate scale factor
+      const scaleX = svgRect.width / viewBox.width;
+      const scaleY = svgRect.height / viewBox.height;
+      
+      // Convert SVG coordinates to screen coordinates
+      const screenX = svgRect.left + (customer.cx * scaleX);
+      const screenY = svgRect.top + (customer.cy * scaleY);
+      
+      // Position tooltip to the right of the marker, with offset
+      let left = screenX + 20;
+      let top = screenY - 60;
 
       // Check if tooltip would overflow right edge
       if (left + 280 > window.innerWidth) {
-        left = rect.left - 292;
+        left = screenX - 300;
       }
 
       // Check if tooltip would overflow bottom
-      if (top + 200 > window.innerHeight) {
-        top = window.innerHeight - 220;
+      if (top + 220 > window.innerHeight) {
+        top = window.innerHeight - 240;
       }
 
       // Check if tooltip would overflow top
@@ -919,12 +944,17 @@
         top = 10;
       }
 
-      tooltip.style.left = left + 'px';
-      tooltip.style.top = top + 'px';
+      tooltip.style.left = Math.round(left) + 'px';
+      tooltip.style.top = Math.round(top) + 'px';
+      tooltip.classList.add('visible');
     }
 
     function hideTooltip() {
-      tooltip.classList.remove('visible');
+      // Small delay to prevent flicker when moving between markers
+      tooltipTimeout = setTimeout(() => {
+        tooltip.classList.remove('visible');
+        currentTooltipCustomer = null;
+      }, 100);
     }
 
     function updateRoute() {
@@ -1062,7 +1092,8 @@
       const id = parseInt(marker.dataset.id);
       const customer = customers[id];
 
-      marker.addEventListener('click', () => {
+      marker.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent event bubbling
         if (selectedStops.includes(id)) {
           selectedStops = selectedStops.filter(s => s !== id);
         } else {
@@ -1071,7 +1102,7 @@
         updateRoute();
       });
 
-      marker.addEventListener('mouseenter', e => showTooltip(e, customer));
+      marker.addEventListener('mouseenter', () => showTooltip(marker, customer));
       marker.addEventListener('mouseleave', hideTooltip);
     });
 
