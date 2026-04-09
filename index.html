@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Steve's Customer Route Planner | Bullivants</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #fafaf9;
+      --bg-secondary: #f5f5f4;
+      --bg-tertiary: #e7e5e4;
+      --text-primary: #1c1917;
+      --text-secondary: #57534e;
+      --text-tertiary: #a8a29e;
+      --border: #d6d3d1;
+      --border-light: #e7e5e4;
+      --accent: #2563eb;
+      --accent-light: #dbeafe;
+      --accent-dark: #1d4ed8;
+      --success: #059669;
+      --success-light: #d1fae5;
+      --warning: #d97706;
+      --warning-light: #fef3c7;
+      --vic: #3b82f6;
+      --nsw: #8b5cf6;
+      --sa: #f97316;
+      --qld: #ec4899;
+      --branch: #059669;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-primary: #1c1917;
+        --bg-secondary: #292524;
+        --bg-tertiary: #44403c;
+        --text-primary: #fafaf9;
+        --text-secondary: #a8a29e;
+        --text-tertiary: #78716c;
+        --border: #44403c;
+        --border-light: #292524;
+        --accent-light: #1e3a5f;
+        --success-light: #064e3b;
+        --warning-light: #451a03;
+      }
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--success);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .logo-text h1 {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-text span {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .stats-bar {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: right;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-primary);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .map-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      position: relative;
+    }
+
+    .map-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .legend-square {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+    }
+
+    .filter-pills {
+      display: flex;
+      gap: 6px;
+    }
+
+    .filter-pill {
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .filter-pill:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .filter-pill.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .map-container {
+      position: relative;
+      background: var(--bg-primary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .map-container svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .marker {
+      cursor: pointer;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .marker:hover {
+      transform: scale(1.4);
+      filter: brightness(1.15);
+    }
+
+    .marker.selected {
+      filter: drop-shadow(0 0 6px currentColor);
+    }
+
+    /* FIXED TOOLTIP - Now uses fixed positioning */
+    .tooltip {
+      position: fixed;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      font-size: 13px;
+      max-width: 280px;
+      min-width: 200px;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.15s ease, visibility 0.15s ease;
+      z-index: 9999;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .tooltip.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .tooltip-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .tooltip-state {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .tooltip-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .tooltip-address {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .tooltip-branch {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--success-light);
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 10px;
+    }
+
+    .tooltip-branch-icon {
+      font-size: 14px;
+    }
+
+    .tooltip-branch-text {
+      font-size: 12px;
+      color: var(--success);
+    }
+
+    .tooltip-branch-time {
+      font-weight: 600;
+      margin-left: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--success);
+    }
+
+    .tooltip-section-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .tooltip-distances {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .tooltip-distance-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .tooltip-distance-name {
+      color: var(--text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 150px;
+    }
+
+    .tooltip-distance-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .clear-btn {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .clear-btn:hover {
+      color: #ef4444;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .form-select {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    .stop-list {
+      list-style: none;
+      min-height: 80px;
+    }
+
+    .stop-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      margin-bottom: 8px;
+      cursor: grab;
+      transition: all 0.15s;
+    }
+
+    .stop-item:hover {
+      border-color: var(--accent);
+    }
+
+    .stop-item:active {
+      cursor: grabbing;
+    }
+
+    .stop-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .stop-name {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .stop-time {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-secondary);
+    }
+
+    .stop-remove {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+
+    .stop-remove:hover {
+      background: #fef2f2;
+      color: #ef4444;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 24px;
+      color: var(--text-tertiary);
+      font-size: 13px;
+    }
+
+    .empty-state-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+      opacity: 0.5;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-light);
+      margin-top: 16px;
+    }
+
+    .summary-item {
+      text-align: center;
+    }
+
+    .summary-value {
+      font-size: 20px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-primary);
+    }
+
+    .summary-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+
+    .overnight-alert {
+      background: var(--warning-light);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      margin-top: 12px;
+    }
+
+    .overnight-alert-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--warning);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .overnight-alert-text {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-dark);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .instructions {
+      background: var(--accent-light);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    footer {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-light);
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">B</div>
+        <div class="logo-text">
+          <h1>Steve's Route Planner</h1>
+          <span>Bullivants Customer Locations</span>
+        </div>
+      </div>
+      <div class="stats-bar">
+        <div class="stat">
+          <div class="stat-value" id="stat-sites">18</div>
+          <div class="stat-label">Sites</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">6</div>
+          <div class="stat-label">Branches</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">5</div>
+          <div class="stat-label">States</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="instructions">
+      <span>💡</span>
+      <span>Click customer markers to build your route. Hover for details. Drag stops to reorder.</span>
+    </div>
+
+    <div class="main-grid" style="margin-top: 20px;">
+      <div class="map-card">
+        <div class="map-header">
+          <div class="legend">
+            <div class="legend-item"><div class="legend-square" style="background: var(--branch)"></div> Branch</div>
+            <div class="legend-item"><div class="legend-dot" style="background: var(--vic)"></div> VIC</div>
+            <div class="legend-item"><div class="legend-dot" style="background: var(--nsw)"></div> NSW</div>
+            <div class="legend-item"><div class="legend-dot" style="background: var(--sa)"></div> SA</div>
+            <div class="legend-item"><div class="legend-dot" style="background: var(--qld)"></div> QLD</div>
+          </div>
+          <div class="filter-pills">
+            <button class="filter-pill active" data-filter="all">All</button>
+            <button class="filter-pill" data-filter="VIC">VIC</button>
+            <button class="filter-pill" data-filter="NSW">NSW</button>
+            <button class="filter-pill" data-filter="SA">SA</button>
+            <button class="filter-pill" data-filter="QLD">QLD</button>
+          </div>
+        </div>
+
+        <div class="map-container">
+          <svg viewBox="0 0 600 480" id="route-map">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </marker>
+            </defs>
+            
+            <!-- Australia outline -->
+            <path d="M50 400 L50 180 Q50 90 140 70 L320 50 Q420 42 500 70 L570 110 L588 180 L580 300 L545 380 L460 430 L360 455 L160 465 Z" 
+                  fill="var(--bg-tertiary)" stroke="var(--border)" stroke-width="1.5"/>
+            
+            <!-- State boundaries -->
+            <path d="M140 70 L140 320 L50 320" fill="none" stroke="var(--border)" stroke-width="0.75" stroke-dasharray="5 3"/>
+            <path d="M140 180 L360 180" fill="none" stroke="var(--border)" stroke-width="0.75" stroke-dasharray="5 3"/>
+            <path d="M360 50 L360 320" fill="none" stroke="var(--border)" stroke-width="0.75" stroke-dasharray="5 3"/>
+            
+            <!-- State labels -->
+            <text x="90" y="260" font-size="14" fill="var(--text-tertiary)" font-weight="500">SA</text>
+            <text x="240" y="130" font-size="14" fill="var(--text-tertiary)" font-weight="500">QLD</text>
+            <text x="280" y="260" font-size="14" fill="var(--text-tertiary)" font-weight="500">NSW</text>
+            <text x="250" y="380" font-size="14" fill="var(--text-tertiary)" font-weight="500">VIC</text>
+
+            <!-- Route lines container -->
+            <g id="route-lines"></g>
+            
+            <!-- Branches -->
+            <g class="branch" data-branch="Melbourne">
+              <rect x="278" y="398" width="14" height="14" rx="3" fill="var(--branch)" stroke="#047857" stroke-width="1.5"/>
+              <text x="296" y="410" font-size="11" fill="var(--text-secondary)">Melbourne</text>
+            </g>
+            <g class="branch" data-branch="Adelaide">
+              <rect x="98" y="308" width="14" height="14" rx="3" fill="var(--branch)" stroke="#047857" stroke-width="1.5"/>
+              <text x="116" y="320" font-size="11" fill="var(--text-secondary)">Adelaide</text>
+            </g>
+            <g class="branch" data-branch="Wollongong">
+              <rect x="418" y="318" width="14" height="14" rx="3" fill="var(--branch)" stroke="#047857" stroke-width="1.5"/>
+              <text x="436" y="330" font-size="11" fill="var(--text-secondary)">Wollongong</text>
+            </g>
+            <g class="branch" data-branch="Newcastle">
+              <rect x="428" y="268" width="14" height="14" rx="3" fill="var(--branch)" stroke="#047857" stroke-width="1.5"/>
+              <text x="446" y="280" font-size="11" fill="var(--text-secondary)">Newcastle</text>
+            </g>
+            <g class="branch" data-branch="Brisbane">
+              <rect x="448" y="128" width="14" height="14" rx="3" fill="var(--branch)" stroke="#047857" stroke-width="1.5"/>
+              <text x="466" y="140" font-size="11" fill="var(--text-secondary)">Brisbane</text>
+            </g>
+
+            <!-- Customer markers -->
+            <!-- VIC -->
+            <circle class="marker" data-id="0" cx="292" cy="403" r="8" fill="var(--vic)" stroke="#1d4ed8" stroke-width="1.5"/>
+            <circle class="marker" data-id="1" cx="195" cy="335" r="8" fill="var(--vic)" stroke="#1d4ed8" stroke-width="1.5"/>
+            <circle class="marker" data-id="2" cx="215" cy="350" r="8" fill="var(--vic)" stroke="#1d4ed8" stroke-width="1.5"/>
+            <circle class="marker" data-id="3" cx="238" cy="355" r="8" fill="var(--vic)" stroke="#1d4ed8" stroke-width="1.5"/>
+            <circle class="marker" data-id="4" cx="175" cy="365" r="8" fill="var(--vic)" stroke="#1d4ed8" stroke-width="1.5"/>
+            
+            <!-- SA -->
+            <circle class="marker" data-id="5" cx="98" cy="280" r="8" fill="var(--sa)" stroke="#c2410c" stroke-width="1.5"/>
+            <circle class="marker" data-id="6" cx="138" cy="325" r="8" fill="var(--sa)" stroke="#c2410c" stroke-width="1.5"/>
+            <circle class="marker" data-id="7" cx="108" cy="300" r="8" fill="var(--sa)" stroke="#c2410c" stroke-width="1.5"/>
+            <circle class="marker" data-id="8" cx="92" cy="255" r="8" fill="var(--sa)" stroke="#c2410c" stroke-width="1.5"/>
+            
+            <!-- NSW -->
+            <circle class="marker" data-id="9" cx="405" cy="272" r="8" fill="var(--nsw)" stroke="#6d28d9" stroke-width="1.5"/>
+            <circle class="marker" data-id="10" cx="338" cy="205" r="8" fill="var(--nsw)" stroke="#6d28d9" stroke-width="1.5"/>
+            <circle class="marker" data-id="11" cx="288" cy="235" r="8" fill="var(--nsw)" stroke="#6d28d9" stroke-width="1.5"/>
+            <circle class="marker" data-id="12" cx="305" cy="252" r="8" fill="var(--nsw)" stroke="#6d28d9" stroke-width="1.5"/>
+            <circle class="marker" data-id="13" cx="258" cy="300" r="8" fill="var(--nsw)" stroke="#6d28d9" stroke-width="1.5"/>
+            <circle class="marker" data-id="14" cx="235" cy="318" r="8" fill="var(--nsw)" stroke="#6d28d9" stroke-width="1.5"/>
+            <circle class="marker" data-id="15" cx="352" cy="222" r="8" fill="var(--nsw)" stroke="#6d28d9" stroke-width="1.5"/>
+            
+            <!-- QLD -->
+            <circle class="marker" data-id="16" cx="378" cy="148" r="8" fill="var(--qld)" stroke="#be185d" stroke-width="1.5"/>
+            <circle class="marker" data-id="17" cx="358" cy="168" r="8" fill="var(--qld)" stroke="#be185d" stroke-width="1.5"/>
+            
+            <!-- Stop numbers overlay -->
+            <g id="stop-numbers"></g>
+          </svg>
+        </div>
+      </div>
+
+      <div class="sidebar">
+        <div class="card">
+          <div class="form-group">
+            <label class="form-label">Starting branch</label>
+            <select class="form-select" id="start-branch">
+              <option value="Melbourne">Melbourne</option>
+              <option value="Adelaide">Adelaide</option>
+              <option value="Newcastle">Newcastle</option>
+              <option value="Wollongong">Wollongong</option>
+              <option value="Brisbane">Brisbane</option>
+            </select>
+          </div>
+
+          <div class="card-header">
+            <span class="card-title">Route stops</span>
+            <span class="clear-btn" id="clear-all">Clear all</span>
+          </div>
+
+          <ul class="stop-list" id="stop-list">
+            <li class="empty-state">
+              <div class="empty-state-icon">📍</div>
+              <div>Click markers to add stops</div>
+            </li>
+          </ul>
+
+          <div id="route-summary" style="display: none;">
+            <div class="summary-grid">
+              <div class="summary-item">
+                <div class="summary-value" id="total-stops">0</div>
+                <div class="summary-label">Stops</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-value" id="total-time">0h</div>
+                <div class="summary-label">Drive</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-value" id="total-dist">0</div>
+                <div class="summary-label">km</div>
+              </div>
+            </div>
+            <div id="overnight-box"></div>
+          </div>
+
+          <button class="btn btn-primary" id="optimise-btn" disabled style="margin-top: 16px;">
+            <span>⚡</span>
+            <span>Optimise route</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      Bullivants Customer Route Planner &middot; Built for Steve
+    </footer>
+  </div>
+
+  <!-- Tooltip (outside container for fixed positioning) -->
+  <div class="tooltip" id="tooltip"></div>
+
+  <script>
+    const customers = [
+      { id: 0, name: "Brooklyn", full: "Brooklyn, VIC 3012", address: "425 Somerville Rd", cx: 292, cy: 403, branch: "Melbourne", driveMin: 45, state: "VIC", color: "var(--vic)" },
+      { id: 1, name: "Sea Lake", full: "Sea Lake, VIC 3533", address: "cnr Greer St & Calder Hwy", cx: 195, cy: 335, branch: "Melbourne", driveMin: 300, state: "VIC", color: "var(--vic)" },
+      { id: 2, name: "Birchip", full: "Birchip, VIC 3483", address: "cnr Sunraysia Hwy & Aerodrome Rd", cx: 215, cy: 350, branch: "Melbourne", driveMin: 240, state: "VIC", color: "var(--vic)" },
+      { id: 3, name: "Charlton", full: "Charlton, VIC 3525", address: "Back Teddywaddy Road", cx: 238, cy: 355, branch: "Melbourne", driveMin: 15, state: "VIC", color: "var(--vic)" },
+      { id: 4, name: "Dimboola", full: "Dimboola, VIC 3414", address: "cnr Western Hwy & Dimboola/Jeparit Rd", cx: 175, cy: 365, branch: "Melbourne", driveMin: 240, state: "VIC", color: "var(--vic)" },
+      { id: 5, name: "Maitland SA", full: "Maitland, SA 5573", address: "Minlaton Road", cx: 98, cy: 280, branch: "Adelaide", driveMin: 120, state: "SA", color: "var(--sa)" },
+      { id: 6, name: "Pinnaroo", full: "Pinnaroo, SA 5304", address: "Mallee Highway", cx: 138, cy: 325, branch: "Adelaide", driveMin: 180, state: "SA", color: "var(--sa)" },
+      { id: 7, name: "Mallala", full: "Mallala, SA 5502", address: "62 Mallala Road", cx: 108, cy: 300, branch: "Adelaide", driveMin: 45, state: "SA", color: "var(--sa)" },
+      { id: 8, name: "Crystal Brook", full: "Crystal Brook, SA 5523", address: "198 Goyder Highway", cx: 92, cy: 255, branch: "Adelaide", driveMin: 120, state: "SA", color: "var(--sa)" },
+      { id: 9, name: "Kooragang Is", full: "Kooragang Island, NSW 2304", address: "51 Raven St", cx: 405, cy: 272, branch: "Newcastle", driveMin: 15, state: "NSW", color: "var(--nsw)" },
+      { id: 10, name: "Narrabri", full: "Narrabri, NSW 2390", address: "461 Yarrie Lake Road", cx: 338, cy: 205, branch: "Newcastle", driveMin: 330, state: "NSW", color: "var(--nsw)" },
+      { id: 11, name: "Nyngan", full: "Nyngan, NSW 2825", address: "Barrier Highway", cx: 288, cy: 235, branch: "Newcastle", driveMin: 360, state: "NSW", color: "var(--nsw)" },
+      { id: 12, name: "Narromine", full: "Narromine, NSW 2821", address: "Tullamore Road", cx: 305, cy: 252, branch: "Newcastle", driveMin: 300, state: "NSW", color: "var(--nsw)" },
+      { id: 13, name: "West Wyalong", full: "West Wyalong, NSW 2671", address: "Hateley's Lane", cx: 258, cy: 300, branch: "Wollongong", driveMin: 300, state: "NSW", color: "var(--nsw)" },
+      { id: 14, name: "Oaklands", full: "Oaklands, NSW 2646", address: "Oaklands/Berrigan Road", cx: 235, cy: 318, branch: "Wollongong", driveMin: 360, state: "NSW", color: "var(--nsw)" },
+      { id: 15, name: "Walgett", full: "Walgett, NSW 2832", address: "1Beanbri Road", cx: 352, cy: 222, branch: "Newcastle", driveMin: 360, state: "NSW", color: "var(--nsw)" },
+      { id: 16, name: "The Gums", full: "The Gums, QLD 4406", address: "Surat Development Road", cx: 378, cy: 148, branch: "Brisbane", driveMin: 240, state: "QLD", color: "var(--qld)" },
+      { id: 17, name: "Talwood", full: "Talwood, QLD 4496", address: "Barwon Highway", cx: 358, cy: 168, branch: "Brisbane", driveMin: 300, state: "QLD", color: "var(--qld)" }
+    ];
+
+    const branches = {
+      Melbourne: { cx: 285, cy: 405 },
+      Adelaide: { cx: 105, cy: 315 },
+      Wollongong: { cx: 425, cy: 325 },
+      Newcastle: { cx: 435, cy: 275 },
+      Brisbane: { cx: 455, cy: 135 }
+    };
+
+    const stateColors = {
+      VIC: 'var(--vic)',
+      NSW: 'var(--nsw)',
+      SA: 'var(--sa)',
+      QLD: 'var(--qld)'
+    };
+
+    let selectedStops = [];
+    const tooltip = document.getElementById('tooltip');
+    const stopList = document.getElementById('stop-list');
+    const routeLines = document.getElementById('route-lines');
+    const stopNumbers = document.getElementById('stop-numbers');
+
+    function formatTime(mins) {
+      const h = Math.floor(mins / 60);
+      const m = mins % 60;
+      return h > 0 ? (m > 0 ? `${h}h ${m}m` : `${h}h`) : `${m}m`;
+    }
+
+    function calcDistance(c1, c2) {
+      const dx = c1.cx - c2.cx;
+      const dy = c1.cy - c2.cy;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    function estimateDriveTime(c1, c2) {
+      const dist = calcDistance(c1, c2);
+      return Math.round(dist * 1.8);
+    }
+
+    function getStateDistances(customer) {
+      return customers
+        .filter(c => c.state === customer.state && c.id !== customer.id)
+        .map(c => ({ name: c.name, distance: c.driveMin }));
+    }
+
+    function showTooltip(e, customer) {
+      const stateOthers = getStateDistances(customer);
+      
+      let html = `
+        <div class="tooltip-header">
+          <div class="tooltip-state" style="background: ${stateColors[customer.state]}"></div>
+          <div>
+            <div class="tooltip-title">${customer.full}</div>
+            <div class="tooltip-address">${customer.address}</div>
+          </div>
+        </div>
+        <div class="tooltip-branch">
+          <span class="tooltip-branch-icon">🏢</span>
+          <span class="tooltip-branch-text">${customer.branch}</span>
+          <span class="tooltip-branch-time">${formatTime(customer.driveMin)}</span>
+        </div>
+      `;
+
+      if (stateOthers.length > 0) {
+        html += `
+          <div class="tooltip-section-title">Other ${customer.state} sites</div>
+          <div class="tooltip-distances">
+            ${stateOthers.map(s => `
+              <div class="tooltip-distance-row">
+                <span class="tooltip-distance-name">${s.name}</span>
+                <span class="tooltip-distance-value">${formatTime(s.distance)}</span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      tooltip.innerHTML = html;
+      tooltip.classList.add('visible');
+
+      // Position tooltip using fixed positioning relative to viewport
+      const rect = e.target.getBoundingClientRect();
+      let left = rect.right + 12;
+      let top = rect.top - 20;
+
+      // Check if tooltip would overflow right edge
+      if (left + 280 > window.innerWidth) {
+        left = rect.left - 292;
+      }
+
+      // Check if tooltip would overflow bottom
+      if (top + 200 > window.innerHeight) {
+        top = window.innerHeight - 220;
+      }
+
+      // Check if tooltip would overflow top
+      if (top < 10) {
+        top = 10;
+      }
+
+      tooltip.style.left = left + 'px';
+      tooltip.style.top = top + 'px';
+    }
+
+    function hideTooltip() {
+      tooltip.classList.remove('visible');
+    }
+
+    function updateRoute() {
+      routeLines.innerHTML = '';
+      stopNumbers.innerHTML = '';
+
+      if (selectedStops.length === 0) {
+        stopList.innerHTML = `
+          <li class="empty-state">
+            <div class="empty-state-icon">📍</div>
+            <div>Click markers to add stops</div>
+          </li>
+        `;
+        document.getElementById('route-summary').style.display = 'none';
+        document.getElementById('optimise-btn').disabled = true;
+        document.querySelectorAll('.marker').forEach(m => m.classList.remove('selected'));
+        return;
+      }
+
+      document.getElementById('optimise-btn').disabled = selectedStops.length < 2;
+
+      const branch = document.getElementById('start-branch').value;
+      const branchPos = branches[branch];
+
+      let totalTime = 0;
+      let totalDist = 0;
+      let path = [branchPos, ...selectedStops.map(id => customers[id])];
+      let overnightStops = [];
+      let cumulative = 0;
+
+      for (let i = 0; i < path.length - 1; i++) {
+        const from = path[i];
+        const to = path[i + 1];
+        const time = i === 0 ? to.driveMin : estimateDriveTime(from, to);
+        totalTime += time;
+        cumulative += time;
+        totalDist += calcDistance(from, to) * 3;
+
+        if (cumulative > 480 && i < path.length - 2) {
+          overnightStops.push(to.name);
+          cumulative = 0;
+        }
+
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', from.cx);
+        line.setAttribute('y1', from.cy);
+        line.setAttribute('x2', to.cx);
+        line.setAttribute('y2', to.cy);
+        line.setAttribute('stroke', '#2563eb');
+        line.setAttribute('stroke-width', '2.5');
+        line.setAttribute('stroke-dasharray', '8 4');
+        line.setAttribute('marker-end', 'url(#arrow)');
+        line.setAttribute('opacity', '0.8');
+        routeLines.appendChild(line);
+      }
+
+      // Stop numbers on map
+      selectedStops.forEach((id, idx) => {
+        const c = customers[id];
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', c.cx);
+        circle.setAttribute('cy', c.cy - 18);
+        circle.setAttribute('r', '11');
+        circle.setAttribute('fill', '#dbeafe');
+        circle.setAttribute('stroke', '#2563eb');
+        circle.setAttribute('stroke-width', '1.5');
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', c.cx);
+        text.setAttribute('y', c.cy - 14);
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('font-size', '11');
+        text.setAttribute('font-weight', '600');
+        text.setAttribute('fill', '#2563eb');
+        text.textContent = idx + 1;
+        g.appendChild(circle);
+        g.appendChild(text);
+        stopNumbers.appendChild(g);
+      });
+
+      // Sidebar list
+      stopList.innerHTML = selectedStops.map((id, idx) => {
+        const c = customers[id];
+        const prevTime = idx === 0 ? c.driveMin : estimateDriveTime(customers[selectedStops[idx - 1]], c);
+        return `
+          <li class="stop-item" draggable="true" data-id="${id}">
+            <span class="stop-num">${idx + 1}</span>
+            <span class="stop-name">${c.name}</span>
+            <span class="stop-time">+${formatTime(prevTime)}</span>
+            <span class="stop-remove" onclick="removeStop(${id})">×</span>
+          </li>
+        `;
+      }).join('');
+
+      document.getElementById('route-summary').style.display = 'block';
+      document.getElementById('total-stops').textContent = selectedStops.length;
+      document.getElementById('total-time').textContent = formatTime(totalTime);
+      document.getElementById('total-dist').textContent = Math.round(totalDist);
+
+      const overnightBox = document.getElementById('overnight-box');
+      if (overnightStops.length > 0) {
+        overnightBox.innerHTML = `
+          <div class="overnight-alert">
+            <div class="overnight-alert-title">🌙 Suggested overnight stops</div>
+            <div class="overnight-alert-text">${overnightStops.join(', ')}</div>
+          </div>
+        `;
+      } else if (totalTime > 480) {
+        overnightBox.innerHTML = `
+          <div class="overnight-alert">
+            <div class="overnight-alert-title">🌙 Long trip</div>
+            <div class="overnight-alert-text">Consider overnight accommodation</div>
+          </div>
+        `;
+      } else {
+        overnightBox.innerHTML = '';
+      }
+
+      // Update marker states
+      document.querySelectorAll('.marker').forEach(m => {
+        const id = parseInt(m.dataset.id);
+        m.classList.toggle('selected', selectedStops.includes(id));
+      });
+
+      initDragDrop();
+    }
+
+    function removeStop(id) {
+      selectedStops = selectedStops.filter(s => s !== id);
+      updateRoute();
+    }
+
+    // Initialize markers
+    document.querySelectorAll('.marker').forEach(marker => {
+      const id = parseInt(marker.dataset.id);
+      const customer = customers[id];
+
+      marker.addEventListener('click', () => {
+        if (selectedStops.includes(id)) {
+          selectedStops = selectedStops.filter(s => s !== id);
+        } else {
+          selectedStops.push(id);
+        }
+        updateRoute();
+      });
+
+      marker.addEventListener('mouseenter', e => showTooltip(e, customer));
+      marker.addEventListener('mouseleave', hideTooltip);
+    });
+
+    // Filter buttons
+    document.querySelectorAll('.filter-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+
+        document.querySelectorAll('.marker').forEach(marker => {
+          const id = parseInt(marker.dataset.id);
+          const customer = customers[id];
+          if (filter === 'all' || customer.state === filter) {
+            marker.style.opacity = '1';
+            marker.style.pointerEvents = 'auto';
+          } else {
+            marker.style.opacity = '0.15';
+            marker.style.pointerEvents = 'none';
+          }
+        });
+
+        const count = filter === 'all' ? 18 : customers.filter(c => c.state === filter).length;
+        document.getElementById('stat-sites').textContent = count;
+      });
+    });
+
+    // Clear all button
+    document.getElementById('clear-all').addEventListener('click', () => {
+      selectedStops = [];
+      updateRoute();
+    });
+
+    // Start branch change
+    document.getElementById('start-branch').addEventListener('change', updateRoute);
+
+    // Optimise button
+    document.getElementById('optimise-btn').addEventListener('click', () => {
+      if (selectedStops.length < 2) return;
+
+      const branch = document.getElementById('start-branch').value;
+      let current = branches[branch];
+      let remaining = [...selectedStops];
+      let optimised = [];
+
+      while (remaining.length > 0) {
+        let nearestIdx = 0;
+        let nearestDist = Infinity;
+
+        remaining.forEach((id, idx) => {
+          const c = customers[id];
+          const dist = calcDistance(current, c);
+          if (dist < nearestDist) {
+            nearestDist = dist;
+            nearestIdx = idx;
+          }
+        });
+
+        const nextId = remaining.splice(nearestIdx, 1)[0];
+        optimised.push(nextId);
+        current = customers[nextId];
+      }
+
+      selectedStops = optimised;
+      updateRoute();
+    });
+
+    // Drag and drop
+    function initDragDrop() {
+      const items = stopList.querySelectorAll('.stop-item');
+      items.forEach(item => {
+        item.addEventListener('dragstart', e => {
+          e.dataTransfer.setData('text/plain', item.dataset.id);
+          item.style.opacity = '0.5';
+        });
+        item.addEventListener('dragend', () => item.style.opacity = '1');
+        item.addEventListener('dragover', e => e.preventDefault());
+        item.addEventListener('drop', e => {
+          e.preventDefault();
+          const fromId = parseInt(e.dataTransfer.getData('text/plain'));
+          const toId = parseInt(item.dataset.id);
+          const fromIdx = selectedStops.indexOf(fromId);
+          const toIdx = selectedStops.indexOf(toId);
+          selectedStops.splice(fromIdx, 1);
+          selectedStops.splice(toIdx, 0, fromId);
+          updateRoute();
+        });
+      });
+    }
+  </script>
+</body>
+</html>
